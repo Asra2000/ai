@@ -60,7 +60,7 @@ def load_data(filename):
     is 1 if Revenue is true, and 0 otherwise.
     """
 
-    months = {"Jan" : 0, "Feb" : 1, "Mar" : 2, "Apr" : 3, "May" : 4, "Jun" : 5, 
+    months = {"Jan" : 0, "Feb" : 1, "Mar" : 2, "Apr" : 3, "May" : 4, "June" : 5, 
     "Jul" : 6, "Aug" : 7, "Sep": 8, "Oct" : 9, "Nov": 10, "Dec" : 11}
 
     evidence = list()
@@ -68,6 +68,7 @@ def load_data(filename):
     integer_field = [0, 2, 4, 11, 12, 13, 14]
     with open(filename, 'r') as file:
         reader = csv.reader(file)
+        next(reader, None)  # skip the headers
         for row in reader:
             for i in list(range(17)):
                 if i in integer_field:
@@ -137,7 +138,15 @@ def evaluate(labels, predictions):
             # original negatove label
             negative += 1
             specificity += 1 if prediction == 1 else 0
-    return (sensitivity / positive, specificity / negative)
+    if positive == 0:
+        sensitivity = 1
+    else:
+        sensitivity = sensitivity / positive
+    if negative == 0:
+        specificity = 1
+    else:
+        specificity = specificity / negative
+    return (sensitivity , specificity)
 
 
 if __name__ == "__main__":
